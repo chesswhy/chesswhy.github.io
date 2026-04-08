@@ -1,3 +1,2 @@
-
+# chesswhy.github.io
 Chess
-inputtypes.html
