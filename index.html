@@ -1,82 +1,814 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Input Types Demo</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        input { margin: 5px 0; padding: 5px; width: 250px; }
-    </style>
-</head>
-<body>
-    <h1>HTML Input Types Demo</h1>
-    <form>
-        <!-- Textual Inputs -->
-        <label for="text">Text:</label>
-        <input type="text" id="text" placeholder="Enter text">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Platformer</title>
+        <style>
+            body {
+                user-select: none;
+                background-color: green;
+            }
+            #player {
+                width: 30px;
+                height: 30px;
+                background-color: aquamarine;
+                position: absolute;
+               
+                z-index: 2;
+                background-image: url("player2.svg");
+                background-repeat: no-repeat;
+                background-size: 30px;
+               
+                
+            
+            }
+            
+            #hole {
+                width: 80px;
+                height: 5px;
+                background-color: black;
+                border-radius: 50%;
+                position: absolute;
+                top: 530px;
+                left: 270px;
+                z-index: 4;
+            }
+            #rock{
+                background-image: url("costume6.png");
+                width: 75px;
+                height: 48px;
+                background-repeat: no-repeat;
+                background-size: 40px;
+                position: absolute;
+                left:550px;
+                top:20px;
+            }
+            
+            .platform {
+                position: absolute;
+                background-color: #5f5f5f;
+                z-index: 1;
+            }
+            .grass {
+                position: absolute;
+                background-color: dimgray;
+                z-index: 0;
+            }
+            #debug {
+                background-color: aqua;
+                width: 20px;
+                height: 20px;
+                position: absolute;
+            }
+            
+            #screen {
+                width: 650px;
+                background-color: #3b3b3b;
+                height: 550px;
+                border: 10px solid gray;
+                margin: 10px auto;
+                overflow: hidden;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+            }
+              #newScreen {
+                width: 650px;
+               
+                height: 550px;
+                border: 10px solid gray;
+                position: absolute;
+                margin: 10px auto;
+                overflow: hidden;
+                background-color:transparent;
+                top: 0;
+                left: 0;
+                z-index: 1;
+            }
+            #wholescreen{
+                position: relative;
+                width: 650px;
+                height: 550px;
+                margin: 10px auto;
+            }
+            #todolist {
+                position: absolute;
+                width: 200px;
+                height: 120px;
+                background-color: rgb(245, 5, 45, 0.9);
+                text-align: center;
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter password">
+                font-family: monospace;
+                font-size: 20px;
+                border-radius: 30px;
+                margin: 20px;
+                z-index: 2;
+            }
+            .items {
+                background-color: slategray;
+                width: 200px;
+            }
+            .items:hover {
+                background-color: rgb(127, 140, 154);
+            }
+            .box {
+                width: 10px;
+                height: 10px;
+                background-color: red;
+                position: absolute;
+                z-index: 12;
+            }
+            .particles {
+                width: 10px;
+                height: 10px;
+                background-color: lawngreen;
+                position: absolute;
+                z-index: 1;
+            }
+            .spike {
+                
+                border-left:  solid transparent;
+                border-right: solid transparent;
+                border-bottom: solid gray;
+                
+                position: absolute;
+                
+                z-index: 1;
+            }
+           
+          
+            #floor{
+                position: absolute;
+                top:530px;
+                width: 650px;
+                height:320px;
+                background-image:url("darkrocks.png");
+                background-position-y:20px;
+                background-repeat: no-repeat;
+                z-index: 3;
+            }
+            #leftwall{
+                position: absolute;
+                left:0;
+                top:0;
+                width: 250px;
+                height:2000px;
+            }
+          
+            #enemey{
+                width:30px;
+                 position: absolute;
+                top:366px;
+                left:300px;
+                height:30px;
+                background-color: red;
+                background-image: url("stone2.svg");
+                background-size: 30px;
+                
+            }
+            #light{
+                width:60px;
+                height:760px;
+                background-color: rgba(255, 240, 162, 0.53);
+                position: absolute;
+                z-index: 10;
+                
+            }
+            #toplight{
+                width:60px;
+                height:150px;
+                background-image:linear-gradient(to bottom,white,rgba(255, 238, 151, 0.53));
+                position: absolute;
+                z-index: 2;
+                border-top-left-radius: 20px;
+                border-top-right-radius: 20px;
+                
+            }
+            #lights{
+                width:10px;
+                height:890px;
+                background-color: rgba(255, 248, 210, 0.39);
+                position: absolute;
+                z-index: 2;
+                animation:move 3.4s infinite alternate;
+            }
+            #lights2{
+                width:10px;
+                height:890px;
+                background-color: rgba(255, 252, 235, 0.39);
+                position: absolute;
+                z-index: 2;
+                animation:move 2.9s infinite alternate-reverse;
+            }
+            #lights3{
+                width:10px;
+                height:890px;
+                background-color: rgba(255, 248, 235, 0.39);
+                position: absolute;
+                z-index: 2;
+                animation:move 3.8s infinite alternate;
+            }
+            #decor{
+                width: 180px;
+                height: 140px;
+                background-image:url("rockexit.svg");
+                background-repeat: no-repeat;
+                background-size: 180px;
+                z-index: 3;
+                position: absolute;
+            }
+            @keyframes move{
+                0%{transform: translate(-2px,0);opacity: 0.5}
+                50%{transform: translate(2px,0);opacity: 1}
+                75%{transform: translate(3px,0) ;opacity: 1}
+                90%{transform: translate(1px,0);opacity: 0;}
+                100%{transform: translate(4px,0);opacity: 0;}
+                
+            }
+        </style>
+    </head>
+    <body>
+        <div id=wholescreen>
+        <canvas id="newScreen"></canvas>
+        <div id="screen">
+            <div id="todolist">
+                To do
+                <div class="items">nothing</div>
+                <div class="items">idk</div>
+                <div class="items">dddde</div>
+                <div class="items" style="border-bottom-right-radius: 30px; border-bottom-left-radius: 30px">
+                    something
+                </div>
+            </div>
+            <div onclick="notdead=false;" id="player"></div>
+  
+            <div class="platform" id="floor"></div>
+            <div class="platform" id="leftwall"></div>
+          
+            <div id="hole"></div>
+            <div id="debug"></div>
+            <div id="enemey"></div>
+           <div id="light"></div>
+            <div id="lights"></div>
+            <div id="lights2"></div>
+            <div id="lights3"></div>
+            <div id="decor"></div>
+             <div id="toplight"></div>
+            
+            
+            <div id="rock"></div>
+        </div>
+        </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" placeholder="example@example.com">
+        <script>
+            let walltouch = false;
+            let wallmove = 2;
+            let wallmove2 = -2;
+            let wy = -5000;
+            let anothervariblesosad = false;
+            let health = 4; 
+            let time = 0;
+            let deathtime = 0;
+            let jump = false;
+            let attacking = false; 
+            let deathcubev = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            let wx = 5000;
+            let y = 0;
+            let x = 0;
+            let uppress = 0;
+            let downpress = 0;
+            let notdead = true;
+            let spikes = [200,300,30,20,
+                         580,130,40,20,
+                         50, 100,30, 20,];
+            
+            let walls = [
+                200, 400, 360, 20, //left,top,width,height
+                20, 365, 80, 10, 
+                200, 320, 40, 30, 
+                580, 150, 40, 400, 
+                150, 250, 30, 10,
+                30, 470, 50, 60,
+                230, 190, 50, 10,
+                0, 120, 170, 50,
+                232, 100, 10, 20,
+                400, 35, 10, 20,
+                350, -50, 25, 10,
+                60, -120, 350, 12,
+                190, -50, 70, 15,
+                100, -50, 30, 15,
+                0, -50, 30, 15,
+                160, -300, 250, 16,
+            ];
+            
+            class Enemey{
+                constructor(name, health,x,y) {
+                    this.name = name;
+                    this.health = health;
+                    this.x=x;
+                    this.y=y;
+                }
+                attacked(){
+                    this.health--;
+                }
+            }
+            const enemey1 = new Enemey("enemey1", 4,30,30);
 
-        <label for="url">URL:</label>
-        <input type="url" id="url" placeholder="https://example.com">
+            
+            const canvas = document.getElementById("newScreen");
+            const ctx = canvas.getContext("2d");
+            let img = new Image();
+            canvas.width = 650;
+            canvas.height = 550;
+            const ene = document.getElementById("enemey").style;
 
-        <label for="tel">Telephone:</label>
-        <input type="tel" id="tel" placeholder="123-456-7890">
+            
+            
+            
+           
+            /////////////////////Creating elements////////////////
+            for ( let i = 0; i < 10; i++) {
+                const square = document.createElement("div");
+                square.id = "square" + i;
+                square.className = "box";
+                square.style.display = "none";
+                document.getElementById("screen").appendChild(square);
+                
+            }
+            
+            for (let i = 0; i < 18; i++) {
+                const platform = document.createElement("div");
+                platform.id = "platform" + i;
+                platform.className = "platform";
+                
+                document.getElementById("screen").appendChild(platform);
+                const grass = document.createElement("div");
+                grass.id = "grass" + i;
+                grass.className = "grass";
+                document.getElementById("screen").appendChild(grass);
+            }
+            for (let i = 0; i < 3; i++) {
+                    const fors = document.createElement("div");
+                    fors.id = "spike" + i;
+                    fors.className = "spike";
+                    document.getElementById("screen").appendChild(fors);
+                }
+            for (let i = 0; i < 5; i++) {
+                const parti = document.createElement("div");
+                parti.id = "parti" + i;
+                parti.className = "particles";
+                document.getElementById("screen").appendChild(parti);
+            }
+            ////////////////////////////////////////////////////
+            deathcube();
+            movewall();
+            ///////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////
+            function movewall() {
+                if (wy < 2400) {
+                    document.getElementById("todolist").style.opacity = "0.4";
+                } else {
+                    document.getElementById("todolist").style.opacity = "1";
+                }
 
-        <label for="search">Search:</label>
-        <input type="search" id="search" placeholder="Search...">
+                
+               /////Wallls 
+                 document.getElementById("floor").style.top =`${530-wy/10+250}px`;
+                document.getElementById("floor").style.left =`${-30-wx/10+250}px`;
+                 document.getElementById("light").style.top =`${-230-wy/10+250}px`;
+                document.getElementById("light").style.left =`${280-wx/10+250}px`;
+                 document.getElementById("lights").style.top =`${-360-wy/10+250}px`;
+                document.getElementById("lights").style.left =`${290-wx/10+250}px`;
+                 document.getElementById("lights2").style.top =`${-360-wy/10+250}px`;
+                document.getElementById("lights2").style.left =`${312-wx/10+250}px`;
+                document.getElementById("lights3").style.top =`${-360-wy/10+250}px`;
+                document.getElementById("lights3").style.left =`${320-wx/10+250}px`;
+                 document.getElementById("toplight").style.top =`${-380-wy/10+250}px`;
+                document.getElementById("toplight").style.left =`${280-wx/10+250}px`;
+                 document.getElementById("leftwall").style.top =`${-1000-wy/10+250}px`;
+                document.getElementById("leftwall").style.left =`${-250-wx/10+250}px`;
+                document.getElementById("hole").style.top =`${530-wy/10+250}px`;
+                document.getElementById("hole").style.left =`${270-wx/10+250}px`;
+                 document.getElementById("enemey").style.top =`${366-wy/10+250}px`;
+                document.getElementById("enemey").style.left =`${300-wx/10+250}px`;
+                document.getElementById("decor").style.top =`${-432-wy/10+250}px`;
+                document.getElementById("decor").style.left =`${218-wx/10+250}px`;
+                
+         
+                
+                for (let i = 0; i < 3; i++) {
+                    let fors = document.getElementById("spike"+i);
+                    fors.style.left = spikes[i * 4]-wx/10+250 + "px";
+                    fors.style.top = spikes[i * 4 + 1]-wy/10+250 + "px";
+                    fors.style.borderLeft = spikes[i * 4 + 2]/2 + "px solid transparent";
+                    fors.style.borderRight= spikes[i * 4 + 2]/2 + "px solid transparent";
+                    fors.style.borderBottom = spikes[i * 4 + 3] + "px solid gray";
+                    
+                    document.getElementById("debug").innerHTML = 
+                        `${spikes[i * 4]}||${ spikes[i * 4+1]}||${spikes[i * 4 ]+spikes[i * 4 + 2]}`;
+                    touchingspike(spikes[i * 4]+spikes[i * 4 + 2]/2,
+                    spikes[i * 4+1], spikes[i * 4],
+                    spikes[i * 4 + 1]+spikes[i * 4 + 3],
+                    spikes[i * 4 ]+spikes[i * 4 + 2],spikes[i * 4 + 1]+spikes[i * 4 + 3]);
+                        
+                    
+                    
+                   
+                }
+          
+                
+                for (let i = 0; i < 18; i++) {
+                    let el = document.getElementById("platform" + i);
+                    el.style.left = walls[i * 4]-wx/10+250 + "px";
+                    el.style.top = walls[i * 4 + 1]-wy/10+250 + "px";
+                    el.style.width = walls[i * 4 + 2] + "px";
+                    el.style.height = walls[i * 4 + 3] + "px";
+                    
+                     el = document.getElementById("grass" + i);
+                    el.style.left = walls[i * 4]-wx/10+250 + "px";
+                    el.style.top = walls[i * 4 + 1]-5-wy/10+250 + "px";
+                    el.style.width = walls[i * 4 + 2] + "px";
+                    el.style.height =10 + "px";
+                }
+               
+                ///Moving things
+                if (walls[4] > 500) {
+                    wallmove = -2;
+                }
+                if (walls[4] < 0) {
+                    wallmove = 2;
+                }
+                walls[4] = walls[4] + wallmove;
+                movethiswall(4, wallmove);
 
-        <label for="number">Number:</label>
-        <input type="number" id="number" min="0" max="100" step="1">
+                //////////////////////////////////
+                if (walls[16] > 550) {
+                    wallmove2 = -2;
+                }
+                if (walls[16] < 0) {
+                    wallmove2 = 2;
+                }
+                walls[16] = walls[16] + wallmove2;
+                movethiswall(16, wallmove2);
+                /////////////////////////////////
+               
+                requestAnimationFrame(movewall);
+            }
+            ///////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////
+            document.addEventListener("keydown", function (keys) {
+                if (keys.key == "ArrowLeft") {
+                    uppress = -2;
+                    img.src = "player2.svg";
+                    img.onload = () => {
+                        ctx.drawImage(img, 250, 250,30,30);
+                    };
+                    document.getElementById("player").style.backgroundImage = 'url("player2.svg")';
 
-        <label for="range">Range:</label>
-        <input type="range" id="range" min="0" max="100">
+                }
+                if (keys.key == "ArrowRight") {
+                    uppress = 2;
+                    img.src = "player.svg";
+                    img.onload = () => {
+                        ctx.drawImage(img, 250, 250,30,30);
+                    };
+                    document.getElementById("player").style.backgroundImage = 'url("player.svg")';
+                }
+                if (keys.key == "ArrowUp" && (wy === 5000 || jump)) {
+                    y -= 60;
+                }
+                if (keys.key === " " && !jump && y>-40){
+                    y = 110;
+                    attacking = true;
+                    anothervariblesosad = true;
+                    
+                    document.getElementById("player").style.outline = "2px solid gold";
+                    setTimeout(() => attacked(1), 500);
+                    
+                }
+            });
+            function clicked() {
+                wy = 5000;
+                wx = 5000;
+                y = 0;
+                x = 0;
+            }
+            document.addEventListener("keyup", function (keys) {
+                if (keys.key == "ArrowLeft") {
+                    if (uppress != 2) {
+                        uppress = 0;
+                    }
+                }
+                if (keys.key == "ArrowRight") {
+                    if (uppress != -2) {
+                        uppress = 0;
+                    }
+                }
+            });
+            ///////////////////////////////////////////
+            /////////////////Functions/////////////////
+            ///////////////////////////////////////////
+            function touchingwall(isitx,extra) {
+                for (let wait = 0; wait <= walls.length; wait += 4) {
+                    if (
+                        wx < walls[wait] * 10 + walls[wait + 2] * 10 &&
+                        wx > walls[wait] * 10 - 300 &&
+                        wy > walls[wait + 1] * 10 - 300 &&
+                        wy < walls[wait + 1] * 10 + walls[wait + 3] * 10
+                    ) {
+                        if(anothervariblesosad){
+                            particlessplat();
+                            anothervariblesosad = false;
+                        }
+                        if (isitx == 1) {
+                            wx -= x;
+                            x = 0;
+                        }
+                        if (isitx == 2) {
+                            jump = true;
+                            wy -= y;
+                            y = 0;
+                            
+                            
+                        }
+                        if (isitx == 0) {
+                            wx += extra * 10;
+                        }
+                        if (isitx == -1) {
+                            wx -= extra * 10;
+                        }
+                       
+                        
+                        if (isitx == -2) {
+                            notdead = false;
+                        }
+                    }
+                }
+            }
 
-        <label for="color">Color:</label>
-        <input type="color" id="color">
+            function move() {
+               
+                
+                document.getElementById("player").style.top = `${0}px`;
+                document.getElementById("player").style.left = `${0}px`;
+                
+                ////////////////////spike
+                
+                
+                if (notdead) {
+                    if (uppress != 0) {
+                        x += uppress*3.5;
+                        if(x>32){
+                            x=32;
+                        }
+                        if(x<-32){
+                            x=-32;
+                        }
+                        
+                    }
+                    jump = false;
+                    wx += x;
+                    if(wx<0){
+                        wx=0;
+                        x=0;
+                    }
+                    if(wx>6200){
+                        wx=6200;
+                        x=0;
+                    }
+                    touchingwall(1);
 
-        <!-- Date and Time Inputs -->
-        <label for="date">Date:</label>
-        <input type="date" id="date">
+                    wy += y;
+                    touchingwall(2);
+                   
+                    if (x != 0) {
+                        x -= (x / Math.abs(x)) * 2;
+                    }
+                    if (wy != 5000 || (wx > 2650 && wx < 3350)) {
+                        y += 2;
+                       
+                    }
+                    
+                        if (wy > 4995 && 5210 > wy && !(wx > 2650 && wx < 3350)) {
+                            y = 0;
+                            wy = 5000;
+                            
+                            if(anothervariblesosad){
+                                particlessplat();
+                                anothervariblesosad = false;
+                            }
+                       }  
+                    
+                    if (wy > 8001) {
+                        notdead = false;
+                    }
+                    
+                    
+                    if (y > 180) {
+                        y = 180;
+                    }
+                    touchingwall(-2);
+                    document.getElementById("player").style.top = `${250}px`;
+                document.getElementById("player").style.left = `${250}px`;
+                   
+                    enemey();
+                }
+                requestAnimationFrame(move);
+            }
+            requestAnimationFrame(move);
+            ///////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////
+            function deathcube() {
+                if (!notdead) {
+                    deathtime++;
 
-        <label for="time">Time:</label>
-        <input type="time" id="time">
+                    for (let i = 0; i < 10; i++) {
+                        const sq = document.getElementById("square" + i);
+                        sq.style.display = "block";
+                        if (deathtime == 1) {
+                            document.getElementById("player").style.display = "none";
+                            sq.style.top = `${wy / 10}px`;
+                            sq.style.left = `${wx / 10}px`;
+                            eachdeathcube(Math.random() * 3 - 1, Math.random() * -6 - 2, i);
+                        }
+                    }
+                }
+                if (deathtime == 200) {
+                    notdead = true;
+                    document.getElementById("player").style.display = "block";
+                    deathtime = 0;
+                    clicked();
+                    for (let i = 0; i < 10; i++) {
+                        document.getElementById("square" + i).style.display = "none";
+                    }
+                }
+                requestAnimationFrame(deathcube);
+            }
+           
+            function eachdeathcube(x, y, id) {
+                
+                
+                const sq = document.getElementById("square" + id);
+                if(deathtime>160){
+                    sq.style.left = parseInt(sq.style.left, 10)+(500-parseInt(sq.style.left, 10))/10+2+ "px";
+                     sq.style.top = parseInt(sq.style.top, 10)+(480-parseInt(sq.style.top, 10))/10+2+ "px";
+                }else{
+                    sq.style.top = parseInt(sq.style.top, 10) + y + "px";
+                    sq.style.left = parseInt(sq.style.left, 10) + x + "px";
+                }
+                if (!notdead) {
+                    if (parseInt(sq.style.top)>520){
+                        sq.style.top = 520+"px";
+                        requestAnimationFrame(() => eachdeathcube(x*(Math.random()-0.4), -y*0.6, id));
+                    }else{
+                        requestAnimationFrame(() => eachdeathcube(x, y + 0.5, id));
+                    }
+                    
+                }
+            }
+            //////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////
+            function movethiswall(which, varsname) {
+                if (notdead) {
+                    touchingwall(0,varsname);
+                    if (uppress === 0) {
+                        wy += 5;
+                        if (
+                            wx < walls[which] * 10 + walls[which + 2] * 10 &&
+                            wx > walls[which] * 10 - 300 &&
+                            wy > walls[which + 1] * 10 - 300 &&
+                            wy < walls[which + 1] * 10 + walls[which + 3] * 10
+                        ) {
+                            wx += varsname * 10;
+                            wy -= 5;
+                            touchingwall(-1,varsname);
+                            wy += 5;
+                        }
+                        wy -= 5;
+                        touchingwall(-2,varsname);
+                    }
+                }
+            }
+            
+            function enemey(){
+                   
+                    
+                    if(
+                        wx < 300 * 10 + 30 * 10 &&
+                        wx > 300 * 10 - 300 &&
+                        wy > 366 * 10 - 300 &&
+                        wy < 366 * 10 + 30 * 10 && ene.backgroundColor != "blue"
+                        ){
+                        if(  y>100){
+                            setTimeout(() => attacked(2), 1500);
+                           
+                            document.getElementById("enemey").style.backgroundColor = "blue";
+                        }else{
+                            if(!attacking && health>0){
+                                notdead = false;
+                            }
+                            
+                        }
+                    }   
+                
+                
+            }
+            function particlessplat(){
+                for (i=0;i<5;i++){
+                    const parti = document.getElementById("parti" + i);
+                     parti.style.opacity = 1;
+                    parti.style.display = "block";
+                
+                    parti.style.top = `${250}px`;
+                    parti.style.left = `${250}px`;
+                    eachparticle(1.8-Math.random()*3,-4.5*Math.random(),i);
+                }
+            }
+            function eachparticle(x,y,id){
+                 const parti = document.getElementById("parti" + id);
+                 parti.style.top = `${parseInt(parti.style.top)+y}px`;
+                parti.style.opacity = (parseFloat(parti.style.opacity || 1)-0.03);
+                 parti.style.left = `${parseInt(parti.style.left)+x}px`;
+                if(y<6 ){
+                    requestAnimationFrame(()=> eachparticle(x,y+0.3,id));
+                }else{
+                    parti.style.opacity = 0; 
+                }
+            }
+            function attacked(hi){
+                
+                 document.getElementById("player").style.borderRadius = "2px";
+                            document.getElementById("player").style.outline = "2px gold solid";
+                if(hi===2){
+                
+                    health--; 
+                    ene.backgroundColor = "red";
+                    if(health<0){
+                        ene.left = "-100px";
+                         ene.top = "-100px";
+                        ene.display = "none";
+                    }
+                    document.getElementById("player").style.outline = "none";
+                    
+                }else{
+                    document.getElementById("player").style.outline = "none";
+                }
+                attacking = false;
+            }
+            ///////////////////////////////////////////////
+            ///////////////////////Spike///////////////////
+            ///////////////////////////////////////////////
+            function touchingspike(p1x, p1y, p2x, p2y, p3x, p3y) {
+              
+                const slope1to2 = -(p1y-p2y)/(p1x-p2x);//4/3
+                const slope1to3 = -(p1y-p3y)/(p1x-p3x);//-4/3
+                const slope2to3 = -(p2y-p3y)/(p2x-p3x);//0
+                const b1to2 = p1y-slope1to2*p1x; 
+                const b1to3 = p1y-slope1to3*p1x;
+                const b2to3 = p2y-slope2to3*p1x;
+                 
+                //bottom left
+                if (
+                    wy + 300 <= b2to3*10 &&
+                    wy / 10 + 30 >= ((slope1to3) * wx) / 10 + b1to3 &&
+                    wy / 10 + 30 >= ((slope1to2) * wx) / 10 + b1to2
+                ) {
+                    notdead = false;
+                }
+                //Bottom right
+                if (
+                    wy + 300 <= b2to3*10 &&
+                    wy / 10 + 30 >= ((slope1to3) * (wx + 300)) / 10 + b1to3 &&
+                    wy / 10 + 30 >= ((slope1to2) * (wx + 300)) / 10 + b1to2
+                ) {
+                    notdead = false;
+                }
+                //Top right
+                 if (
+                    wy <= b2to3*10 &&
+                    wy / 10 >= ((slope1to3) * (wx + 300)) / 10 + b1to3 &&
+                    wy / 10 >= ((slope1to2) * (wx + 300)) / 10 + b1to2
+                ) {
+                    notdead = false;
+                }
+                //Top left
+                if (wy <= b2to3*10 && 
+                    wy / 10 > ((slope1to3) * wx) / 10 + b1to3 && 
+                    wy / 10 > ((slope1to2) * wx) / 10 + b1to2
+                ) {
+                    notdead = false;
+                }
+                //Top of spike
+                if (wx <= p1x*10 && wx >= p1x*10-300 && wy >= p1y*10-300 && wy <= p1y*10) {
+                    notdead = false;
+                }
+            }
 
-        <label for="datetime-local">Datetime-local:</label>
-        <input type="datetime-local" id="datetime-local">
-
-        <label for="month">Month:</label>
-        <input type="month" id="month">
-
-        <label for="week">Week:</label>
-        <input type="week" id="week">
-
-        <!-- Choice Inputs -->
-        <label for="checkbox">Checkbox:</label>
-        <input type="checkbox" id="checkbox"> Check me
-
-        <label>Radio buttons:</label>
-        <input type="radio" name="radioGroup" value="1"> Option 1
-        <input type="radio" name="radioGroup" value="2"> Option 2
-      
-        <label for="file">File upload:</label>
-        <input type="file" id="file">
-
-        <!-- Buttons -->
-        <input type="submit" value="Submit">
-        <input type="reset" value="Reset">
-        <input type="button" value="Just a button">
-        <input type="image" src="https://via.placeholder.com/50" alt="Submit Image">
-
-        <!-- Hidden Input -->
-        <input type="hidden" name="hiddenField" value="Hidden Value">
-    </form>
-    <a href="inputtypes.html">Link Text</a
-</body>
+        </script>
+    </body>
 </html>
