@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>hsdgfsfdg</title>
+        <title>Title</title>
         <style>
             #player {
                 border-radius: 20px;
@@ -97,13 +97,29 @@
                 let mx = event.clientX;
                 let my = event.clientY;
                 degrees = Math.atan2(my - y, mx - x) * (180 / Math.PI);
-                document.getElementById("dd").textContent=degrees;
+                document.getElementById("dd").textContent = degrees;
+            });
+            document.addEventListener("mousedown", function () {
+                if ( !attacking && change > 0.2) {
+                    spacepress = true;
+                    attacking = true;
+                    spinning = degrees - 120;
+
+                    swrd.display = "block";
+                    change -= 0.7;
+                    setTimeout(() => {
+                        document.getElementById("sword").style = `transfrom: rotate(${0}deg)`;
+                        attacking = false;
+                        spinning = 0;
+                    }, 300);
+                }
+                
             });
             document.addEventListener("keydown", function (event) {
                 if (event.key === " " && !attacking && change > 0.2) {
                     spacepress = true;
                     attacking = true;
-                    spinning =degrees -120;
+                    spinning = degrees - 120;
 
                     swrd.display = "block";
                     change -= 0.7;
@@ -153,7 +169,7 @@
                 if (attacking) {
                     spinning += 30;
                     swrd.transform = `rotate(${spinning}deg)`;
-                    if (spinning >= 120+degrees) {
+                    if (spinning >= 120 + degrees) {
                         swrd.display = "none";
                     }
                 }
