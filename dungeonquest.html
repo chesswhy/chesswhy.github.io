@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Title</title>
+        <style>
+            #player{
+                border-radius: 20px;
+                width: 30px;
+                height: 30px;
+                background-color: yellow;
+                position: absolute;
+                top:400px;
+                left:400px;
+            }
+            body{
+                background-color: #5a5a5a;
+            }
+            #hi{
+                position: absolute;
+                top:550px;
+                left:1500px;
+            }
+            #sword{
+                background-image: url("sword.svg");
+                width: 110px;
+                position: absolute;
+                height: 20px;
+                display: none;
+                
+                background-repeat: no-repeat;
+                
+                background-position-x: right;
+                opacity: 1;
+                
+            }
+            #nice{
+                width: 300px;
+                height: 100px;
+                font-size: 50px;
+                color:white;
+                position: absolute;
+                top:200px;
+                left: 200px;
+                font-weight: 700;
+                font-family: monospace;
+                animation: thing 5s infinite;
+                overflow: clip;
+                
+                background-color: rgba(0, 0, 0, 0.18);
+                
+                box-sizing: border-box;
+               
+                
+            }
+            @keyframes thing{
+                0%{height: 0;  border-bottom:2px solid white; border-top:2px solid white; }
+                50%{height: 100px; width: 300px;  }
+                100%{width: 0;border-left:2px solid white; border-right:2px solid white; }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="player"></div>
+        <div id="sword"></div>
+        <div id="nice"><div style="margin: 20px 45px;">Floor 1</div></div>
+        <canvas id="hi" width="88" height="88" style="border-radius: 50%"></canvas>
+
+        <script>
+            let change = 1;
+            let spacepress = false;
+            let attacking = false;
+            let x = 400;
+            let xv = 0;
+            let y = 400;
+            const play = document.getElementById("player").style;
+            const swrd = document.getElementById("sword").style;
+            let yv = 0;
+            let keypressed = 0; 
+            let keypressedy = 0; 
+            let spinning = 0; 
+            let radius = Math.PI * change;
+            const canvas = document.getElementById("hi");
+            const ctx = canvas.getContext("2d");
+            move();
+            document.addEventListener("keydown", function (event) {
+                if (event.key === " " && !attacking && change > 0.2) {
+                    spacepress = true;
+                    attacking = true;
+                    spinning=-120;
+                    
+                    swrd.display="block";
+                    change -= 0.7;
+                    setTimeout(() => {
+                        document.getElementById("sword").style = `transfrom: rotate(${0}deg)`;
+                        attacking = false;
+                        spinning=0;
+                    }, 300);
+                }
+                if (event.key === "ArrowRight") {
+                    keypressed=1;
+                   
+                }
+                if (event.key === "ArrowLeft") {
+                    keypressed=-1;
+                    
+                }
+                if (event.key === "ArrowUp") {
+                    keypressedy=-1;
+                   
+                }
+                if (event.key === "ArrowDown") {
+                    keypressedy=1;
+                    
+                }
+                
+            });
+            document.addEventListener("keyup", function (event) {
+                
+                if (event.key === "ArrowRight") {
+                    
+                    if (keypressed == 1){
+                        
+                        keypressed = 0;
+                    }
+                    
+                }
+                if (event.key === "ArrowLeft") {
+                    if (keypressed == -1){
+                        
+                        keypressed = 0;
+                    }
+                }
+                if (event.key === "ArrowUp") {
+                    
+                    if (keypressedy == -1){
+                        
+                        keypressedy = 0;
+                    }
+                    
+                }
+                if (event.key === "ArrowDown") {
+                    if (keypressedy == 1){
+                        
+                        keypressedy = 0;
+                    }
+                }
+            }); 
+            
+            function move(){
+                
+                if(attacking){
+                    spinning+=30;
+                    swrd.transform = `rotate(${spinning}deg)`;
+                    if(spinning>=120){
+                        swrd.display="none";
+                    }
+                }
+                
+                xv += keypressed/2;
+                yv += keypressedy/2;
+                if(xv>6){
+                    xv=6;
+                }
+                if(xv<-6){
+                    xv=-6;
+                }
+                
+                if(yv>6){
+                    yv=6;
+                }
+                if(yv<-6){
+                    yv=-6;
+                }
+                x +=xv;
+                y +=yv;
+                if(x<20){
+                    x=20;
+                }
+                if(x>1520){
+                    x=1520;
+                }
+                play.left = `${x}px`;
+                play.top = `${y}px`;
+                swrd.left = `${x-40}px`;
+                swrd.top = `${y+5}px`;
+                if(xv != 0){
+                    if(xv>0){
+                        xv-=0.15;
+                        if(xv<0){
+                            xv=0;
+                        }
+                    }else{
+                        xv+=0.15;
+                        if(xv>0){
+                            xv=0;
+                        }
+                    }
+                }
+                if(yv != 0){
+                    if(yv>0){
+                        yv-=0.15;
+                        if(yv<0){
+                            yv=0;
+                        }
+                    }else{
+                        yv+=0.15;
+                        if(yv>0){
+                            yv=0;
+                        }
+                    }
+                }
+                if(x<20){
+                    x=20;
+                    xv=0;
+                }
+                if(x>1520){
+                    x=1520;
+                    xv=0;
+                }
+                if(y>750){
+                    y=750;
+                    yv=0;
+                }
+                if(y<20){
+                    y=20;
+                    yv=0;
+                }
+                requestAnimationFrame(move);
+            }
+            
+            hi();
+            function hi() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                radius = Math.PI * change;
+
+                if (change >= 1.5) {
+                    change = 1.5;
+                    ctx.strokeStyle = "lime";
+                } else {
+                    change += 0.006; 
+
+                    ///////////////////
+                }
+                ctx.strokeStyle = "orange";
+                ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+                ctx.beginPath();
+                ctx.moveTo(44, 44);
+                ctx.arc(44, 44, 40, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.lineCap = "square";
+                ctx.strokeStyle = "gray";
+                ctx.lineWidth = 9;
+
+                ctx.beginPath();
+                ctx.arc(44, 44, 40, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.strokeStyle = "rgb(203, 144, 0)";
+                if (change >= 1.5) {
+                    ctx.strokeStyle = "rgb(146, 0, 0)";
+                }
+                ctx.lineWidth = 9;
+
+                ctx.beginPath();
+                ctx.arc(44, 44, 40, -Math.PI / 2, radius);
+                ctx.stroke();
+                requestAnimationFrame(hi);
+            }
+        </script>
+    </body>
+</html>
