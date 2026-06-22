@@ -154,7 +154,7 @@
                 left:0;
                 top:0;
                 width: 250px;
-                background-image: url("rockdesign.svg");
+                background-color: transparent;
                 height:2000px;
                 z-index: 3;
             }
@@ -168,17 +168,6 @@
                  z-index: 3;
             }
           
-            #enemey{
-                width:30px;
-                 position: absolute;
-                top:366px;
-                left:300px;
-                height:30px;
-                background-color: red;
-                background-image: url("stone2.svg");
-                background-size: 30px;
-                
-            }
             #light{
                 width:60px;
                 height:760px;
@@ -268,15 +257,13 @@
         <canvas id="newScreen"></canvas>
         <div id="screen">
             
-            <div onclick="notdead=false;" id="player"></div>
   
             <div class="platform" id="floor"></div>
             <div class="platform" id="leftwall"></div>
             <div class="platform" id="rightwall"></div>
-            <button id="buttons" onclick="started()">Start</button>
+             <button id="buttons" onclick="started()">Start</button>
             <div id="hole"></div>
             <div id="debug"></div>
-            <div id="enemey"></div>
             <div id="light"></div>
             <div id="lights"></div>
             <div id="lights2"></div>
@@ -286,10 +273,11 @@
             <div id="rock"></div>
         </div>
         </div>
+        
 
         <script>
             let walltouch = false;
-            let wy = -5000;
+            let wy = -7100;
             let anothervariblesosad = false;
             let health = 4; 
             let time = 0;
@@ -297,7 +285,7 @@
             let jump = false;
             let attacking = false; 
             let deathcubev = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            let wx = 5000;
+            let wx = 100;
             let y = 0;
             let x = 0;
             let cutscene = false; 
@@ -306,11 +294,25 @@
             let uppress = 0;
             let downpress = 0;
             let notdead = true;
-            let spikes = [200,300,30,20,
+            let spikes = [200,300,30,20, 
                          580,130,40,20,
                          50, 100,30, 20,
                          10, 100,30, 20,
-                         510, -10,30, 20,];
+                         510, -10,30, 20,
+                         0, -469,20, 20,
+                         270, -535,120, -20,
+                         //80, 515,120, 20,
+                         //269, -467,5, 12,
+                         360, -467,5, 12,
+                         130,-710,45,40,
+                         202,-710,45,40,
+                         247,-710,45,40,
+                         430,-730,45,40,
+                         310,-730,45,40,
+                         370,-730,25,-20,
+                            
+                         
+                         ];
             
             let walls = [
                 200, 400, 380, 20, //left,top,width,height,type??
@@ -324,7 +326,7 @@
                 232, 100, 10, 20,
                 400, 35, 10, 20, //9
                 350, -50, 25, 10,
-                60, -120, 350, 12,
+                60, -120, 352, 12,
                 190, -50, 70, 15,
                 100, -50, 30, 15,
                 0, -50, 30, 15, //14
@@ -336,14 +338,25 @@
                 450, -220, 35, 20,
                 450, 10, 200, 15, 
                 412, -135, 5, 335,
+                0, -370, 56, 15,
+                200, -450, 456, 15,//24
+                0, -450, 56, 15,
+                0, -570, 556, 15,
+                580, -480, 56, 15,
+                60, -675, 240, 30,
+                295, -700, 355, 25,//29
+                0, -660, 26, 15,
+                0, -850, 360, 25,
+                405, -850, 156, 25,
             ];
             
             class Enemey{
-                constructor(name, health,x,y) {
+                constructor(name, health,x,y,immune) {
                     this.name = name;
                     this.health = health;
                     this.x=x;
                     this.y=y;
+                    this.immune=immune;
                 }
                 attacked(){
                     this.health--;
@@ -361,49 +374,72 @@
                 }
             }
             class movingwalls{
-                constructor(name,y,yL,yR,speed){
+                constructor(name,y,yL,yR,goesup,spiken){
                     this.name=name;
                     this.y=y;
                     this.yL=yL;
                     this.yR=yR;
+                    this.goesup=goesup;
+                    this.spiken=spiken;
                  
                 }
                 move(){
-                    if (walls[this.name] > this.yR) {
-                        this.y = -this.y;
+                    if(!this.spiken){
+                         if (walls[this.name] > this.yR) {
+                            this.y = -this.y;
+                        }
+                        if (walls[this.name] < this.yL) {
+                            this.y = -this.y;
+                        }
+                        walls[this.name] = walls[this.name] + this.y;
+                        movethiswall(this.name, this.y,this.goesup);
+                    }else{
+                        if (spikes[this.name] > this.yR) {
+                            this.y = -this.y;
+                        }
+                        if (spikes[this.name] < this.yL) {
+                            this.y = -this.y;
+                        }
+                        spikes[this.name] = spikes[this.name] + this.y;
+                        
                     }
-                    if (walls[this.name] < this.yL) {
-                        this.y = -this.y;
-                    }
-                    walls[this.name] = walls[this.name] + this.y;
-                    movethiswall(this.name, this.y);
+                   
                 }
             }
             
             
-            const wallmove1 = new movingwalls(4,2,0,500);
-            const wallmove2 = new movingwalls(16,2,0,550);
-            const wallmove3 = new movingwalls(80,4,0,700);
+            const wallmove1 = new movingwalls(4,2,0,500,false,false);
+            const wallmove2 = new movingwalls(16,2,0,550,false,false);
+            const wallmove3 = new movingwalls(80,4,0,700,false,false);
+            const wallmove4 = new movingwalls(109,2,-460,-800,true,false);
+            const spikemove = new movingwalls(53,2,-710,-800,true,true);
+            
+            const enemies = {
+                enemey1: new Enemey("enemey1", 4,300,366,false),
+                enemey2: new Enemey("enemey2", 4,350,-600,false),
+                enemey3: new Enemey("enemey2", 4,310,-600,false),
+                enemey4: new Enemey("enemey2", 4,270,-600,false),
+                enemey5: new Enemey("enemey2", 4,230,-600,false)
+            };
            
-            const enemey1 = new Enemey("enemey1", 4,300,366);
-            const enemey2 = new Enemey("enemey2", 4,90,30);
             
             const canvas = document.getElementById("newScreen");
             const ctx = canvas.getContext("2d");
             let img = new Image();
             const img2 = new Image();
+            const wood = new Image();
+            const img3 = new Image();
+            const img4 = new Image();
             img2.src = "stone2.svg";
-
+            img4.src = "rockdesign.svg";
+            img3.src= "leftwall.svg";
+            wood.src="wood.svg";
                 img2.onload = function() {
                     //ctx.drawImage(img, 300-wx/10+250,366-wy/10+250,30,30);
                     
                 };
             canvas.width = 650;
             canvas.height = 550;
-            const ene = document.getElementById("enemey").style;
-
-            
-            
             
            
             /////////////////////Creating elements////////////////
@@ -416,13 +452,7 @@
                 
             }
             
-           
-            for (let i = 0; i < spikes.length-1; i++) {
-                    const fors = document.createElement("div");
-                    fors.id = "spike" + i;
-                    fors.className = "spike";
-                    document.getElementById("screen").appendChild(fors);
-                }
+          
             for (let i = 0; i < 5; i++) {
                 const parti = document.createElement("div");
                 parti.id = "parti" + i;
@@ -434,7 +464,7 @@
                 deathcube();
                 movewall();
                 requestAnimationFrame(move);
-                 document.getElementById("buttons").style.display="none";
+                document.getElementById("buttons").style.display="none";
             }
             
             ///////////////////////////////////////////////////////
@@ -444,6 +474,7 @@
             function movewall() {
                 ctx.fillStyle = "#3b3b3b";   
                 ctx.fillRect(0, 0, 650, 550); 
+                
                
                /////Wallls 
                 document.getElementById("floor").style.top =`${530-wy/10+250}px`;
@@ -460,6 +491,7 @@
                 document.getElementById("toplight").style.left =`${280-wx/10+250}px`;
                 document.getElementById("leftwall").style.top =`${-1000-wy/10+250}px`;
                 document.getElementById("leftwall").style.left =`${-250-wx/10+250}px`;
+                
                 document.getElementById("rightwall").style.top =`${-1000-wy/10+250}px`;
                 document.getElementById("rightwall").style.left =`${650-wx/10+250}px`;
                 document.getElementById("hole").style.top =`${530-wy/10+250}px`;
@@ -468,56 +500,64 @@
                 document.getElementById("decor").style.top =`${-432-wy/10+250}px`;
                 document.getElementById("decor").style.left =`${218-wx/10+250}px`;
                 
-                
-                for (let i = 0; i < 5; i++) {
-                    let fors = document.getElementById("spike"+i);
-                    fors.style.left = spikes[i * 4]-wx/10+250 + "px";
-                    fors.style.top = spikes[i * 4 + 1]-wy/10+250 + "px";
-                    fors.style.borderLeft = spikes[i * 4 + 2]/2 + "px solid transparent";
-                    fors.style.borderRight= spikes[i * 4 + 2]/2 + "px solid transparent";
-                    fors.style.borderBottom = spikes[i * 4 + 3] + "px solid gray";
-    
-                    document.getElementById("debug").innerHTML = 
-                        `${wx}||${wy}||${cutscene}`;
-                    touchingspike(spikes[i * 4]+spikes[i * 4 + 2]/2,
-                    spikes[i * 4+1], spikes[i * 4],
-                    spikes[i * 4 + 1]+spikes[i * 4 + 3],
-                    spikes[i * 4 ]+spikes[i * 4 + 2],spikes[i * 4 + 1]+spikes[i * 4 + 3]);
+                ctx.drawImage(wood,115-wx/10+250,-115-wy/10+250,20,240);
+                for (let i = 0; i < spikes.length-1; i++) {
+                    const p1 = spikes[i * 4];
+                    const p2 = spikes[i * 4+1];
+                    const p3 = spikes[i * 4+2];
+                    const p4 = spikes[i * 4+3];
+                    ctx.beginPath();
+                    ctx.moveTo(p1-wx/10+250+p3/2, p2-wy/10+250);   // top point
+                    ctx.lineTo(p1-wx/10+250, p2-wy/10+250+ p4);   // bottom left
+                    ctx.lineTo(p1-wx/10+250+p3, p2-wy/10+250+ p4);  // bottom right
+                    ctx.closePath();
+                    ctx.fillStyle = "gray";
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.moveTo(p1-wx/10+250+p3/2, p2-wy/10+250);   // top point
+                    ctx.lineTo(p1-wx/10+250+p3/2, p2-wy/10+250+ p4);   // bottom left
+                    ctx.lineTo(p1-wx/10+250+p3, p2-wy/10+250+ p4);  // bottom right
+                    ctx.closePath();
+                    ctx.fillStyle = "darkgray";
+                    ctx.fill();
+                    touchingspike(p1+p3/2,p2,p1,p2+p4,p1+p3,p2+p4,p4 > 0 ? 1 : -1,i); 
+                   
                 }
-                for (let i = 0; i < 25; i++) {
+                for (let i = 0; i < 35; i++) {
                     //Grass
                     ctx.fillStyle = "#6a6a6a";   
                     ctx.fillRect( walls[i * 4]-wx/10+250, walls[i * 4 + 1]-5-wy/10+250,
                     walls[i * 4 + 2] , walls[i * 4 + 3]); 
                 }
-                for (let i = 0; i < 25; i++) {
+                for (let i = 0; i < 35; i++) {
                     //Wall
                     ctx.fillStyle = "#5f5f5f";   
                     ctx.fillRect( walls[i * 4]-wx/10+250, walls[i * 4 + 1]-wy/10+250,
                     walls[i * 4 + 2] , walls[i * 4 + 3]); 
                     ctx.font = "30px Arial";
-
-                    
                     ctx.fillStyle = "blue";
                     ctx.fillText(i,  walls[i * 4]-wx/10+250, walls[i * 4 + 1]-wy/10+250);
-                    
-                  
                 }
                ctx.fillStyle = "#ff0000"; 
-               
-                
-                ctx.drawImage(img2, 300-wx/10+250,366-wy/10+250,30,30);
-               
-               
+                 ctx.drawImage(img,250,250,30,30);
+                enemeytouch();
                 ///Moving things
-               
                 wallmove1.move();
                 wallmove2.move();
                 wallmove3.move();
+                wallmove4.move();
+                spikemove.move();
+                ctx.globalAlpha = 1;
+                ctx.drawImage(img4,-465-wx/10+250,-950-wy/10,465,1908);
+                if(wx<2000){
+                    ctx.globalAlpha = (wx+2500)/4500;
+                }
+                ctx.drawImage(img3,-350-wx/10+250,-950-wy/10,465,1908/*ogh is 1608*/);
+                
+                ctx.globalAlpha = 1;
                 
                 
                 
-               
                 requestAnimationFrame(movewall);
             }
             ///////////////////////////////////////////////////////
@@ -528,7 +568,7 @@
             ///////////////////////////////////////////
             /////////////////Functions/////////////////
             ///////////////////////////////////////////
-            function touchingwall(isitx,extra) {
+            function touchingwall(isitx,extra,up) {
                 for (let wait = 0; wait <= walls.length; wait += 4) {
                     if (
                         wx < walls[wait] * 10 + walls[wait + 2] * 10 &&
@@ -552,12 +592,24 @@
                             
                         }
                         if (isitx == 0) {
-                            wx += extra * 10;
+                            if(up){
+                                wy += extra * 10;  
+                            }else{
+                                wx += extra * 10; 
+                            }
+                            
                         }
                         if (isitx == -1) {
-                            wx -= extra * 10;
+                            if(up){
+                                wy -= extra * 10;
+                            }else{
+                                wx -= extra * 10; 
+                            }
+                            
                         }
-                       
+                        if (isitx == 3) {//up and down ground
+                            wy += extra * 10;
+                        }
                         
                         if (isitx == -2) {
                             notdead = false;
@@ -576,7 +628,7 @@
                     wx=ogx;
                     wy=ogy;
                     document.getElementById("light").style.display="none";
-                    
+                    document.getElementById("decor").style.zIndex = 1;
                     document.getElementById("toplight").style.display="none";
                 }
                
@@ -586,27 +638,22 @@
                 if(!cutscene){
                     
                
-                document.getElementById("player").style.top = `${0}px`;
-                document.getElementById("player").style.left = `${0}px`;
+                
                 
                 if(wy<=-1500 && wx>1950 && wx< 2300 && wy >-2100 && lvltype==1){
                     cutscene=true;
                     document.getElementById("lights").style.display="none";
                     document.getElementById("lights2").style.display="none";
                     document.getElementById("lights3").style.display="none";
-                  
                     document.querySelector('#light').classList.add('shaking');
                     document.querySelector('#lights').classList.add('shaking');
                     document.querySelector('#toplight').classList.add('shaking');
                     document.querySelector('#lights2').classList.add('shaking');
                     document.querySelector('#lights3').classList.add('shaking');
-
-                   
                     setTimeout(() => {cutscene=false;},5000);
                     requestAnimationFrame(() => shake(wx,wy));
                     lvltype=2;
                 }
-                
                 if (notdead) {
                     if (uppress != 0) {
                         x += uppress*3.5;
@@ -629,10 +676,8 @@
                         x=0;
                     }
                     touchingwall(1);
-
                     wy += y;
                     touchingwall(2);
-                   
                     if (x != 0) {
                         x -= (x / Math.abs(x)) * 2;
                     }
@@ -653,16 +698,13 @@
                     if (wy > 8001) {
                         notdead = false;
                     }
-                    
-                    
                     if (y > 180) {
                         y = 180;
                     }
                     touchingwall(-2);
-                    document.getElementById("player").style.top = `${250}px`;
-                document.getElementById("player").style.left = `${250}px`;
+                    
                    
-                    enemey();
+                    
                 }
                 }
                 requestAnimationFrame(move);
@@ -678,16 +720,15 @@
                         const sq = document.getElementById("square" + i);
                         sq.style.display = "block";
                         if (deathtime == 1) {
-                            document.getElementById("player").style.display = "none";
-                            sq.style.top = `${wy / 10}px`;
-                            sq.style.left = `${wx / 10}px`;
-                            eachdeathcube(Math.random() * 3 - 1, Math.random() * -6 - 2, i);
+                            sq.style.top = `${250}px`;
+                            sq.style.left = `${250}px`;
+                            eachdeathcube(Math.random() * 3 - 1, 3, i);
+                            
                         }
                     }
                 }
-                if (deathtime == 200) {
+                if (deathtime == 390) {
                     notdead = true;
-                    document.getElementById("player").style.display = "block";
                     deathtime = 0;
                     clicked();
                     for (let i = 0; i < 10; i++) {
@@ -701,22 +742,43 @@
                 
                 
                 const sq = document.getElementById("square" + id);
-                if(deathtime>160){
+                if(deathtime>260){
                     sq.style.left = parseInt(sq.style.left, 10)+(500-parseInt(sq.style.left, 10))/10+2+ "px";
                      sq.style.top = parseInt(sq.style.top, 10)+(480-parseInt(sq.style.top, 10))/10+2+ "px";
                 }else{
                     sq.style.top = parseInt(sq.style.top, 10) + y + "px";
                     sq.style.left = parseInt(sq.style.left, 10) + x + "px";
                 }
-                if (!notdead) {
-                    if (parseInt(sq.style.top)>520){
-                        sq.style.top = 520+"px";
-                        requestAnimationFrame(() => eachdeathcube(x*(Math.random()-0.4), -y*0.6, id));
+                //The code to replace
+                
+                
+                const ppx = parseInt(sq.style.left, 10);
+                const ppy = parseInt(sq.style.top, 10);
+                let collid = false;
+                if (!notdead ) {
+                 
+                    for (let wait = 0; wait < walls.length; wait += 4) {
+                        if (
+                            wx/10 +ppx-250 < walls[wait] + walls[wait + 2]&&
+                            wx/10 +ppx-250 > walls[wait]  - 10 &&
+                            wy/10 +ppy-250 > walls[wait + 1] - 10 &&
+                            wy/10 +ppy-250 < walls[wait + 1]  + walls[wait + 3] 
+                        ) {
+                            collid=true;
+                            break;
+                        } 
+                    }
+                    if(collid){
+                        sq.style.top = parseInt(sq.style.top, 10) - y + "px";
+                        requestAnimationFrame(() => eachdeathcube(x*(Math.random()-0.4), -y*Math.random()*0.9, id));
                     }else{
                         requestAnimationFrame(() => eachdeathcube(x, y + 0.5, id));
                     }
                     
+                    
                 }
+                
+                
             }
             //////////////////////////////////////////
             //
@@ -727,7 +789,6 @@
                     img.onload = () => {
                         ctx.drawImage(img, 250, 250,30,30);
                     };
-                    document.getElementById("player").style.backgroundImage = 'url("player2.svg")';
 
                 }
                 if (keys.key == "ArrowRight") {
@@ -736,17 +797,16 @@
                     img.onload = () => {
                         ctx.drawImage(img, 250, 250,30,30);
                     };
-                    document.getElementById("player").style.backgroundImage = 'url("player.svg")';
                 }
                 if (keys.key == "ArrowUp" && (wy === 5000 || jump)) {
-                    y -= 60;
+                    y = -60;
                 }
-                if (keys.key === " " && !jump && y>-40){
+                if (keys.key === " " && !jump && y>-45){
                     y = 110;
                     attacking = true;
+                    setTimeout(() => {attacking=false}, 1500);
                     anothervariblesosad = true;
                     
-                    document.getElementById("player").style.outline = "2px solid gold";
                     
                     
                 }
@@ -771,10 +831,10 @@
             });
             //////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////
-            function movethiswall(which, varsname) {
+            function movethiswall(which, varsname,ups) {
                 if (notdead&&!cutscene) {
-                    touchingwall(0,varsname);
-                    if (uppress === 0) {
+                    touchingwall(0,varsname,ups);
+                    //if (uppress === 0) { testing to see if it works without it
                         wy += 5;
                         if (
                             wx < walls[which] * 10 + walls[which + 2] * 10 &&
@@ -782,20 +842,45 @@
                             wy > walls[which + 1] * 10 - 300 &&
                             wy < walls[which + 1] * 10 + walls[which + 3] * 10
                         ) {
-                            wx += varsname * 10;
+                            if(ups){
+                                wy -= varsname * 10; 
+                            }else{
+                                wx += varsname * 10;  
+                            }
+                            
                             wy -= 5;
-                            touchingwall(-1,varsname);
+                            touchingwall(-1,varsname,ups); 
                             wy += 5;
                         }
                         wy -= 5;
                         touchingwall(-2,varsname);
-                    }
+                    //}
                 }
             }
-            
-            function enemey(){
-                   
+            //const enemey1 = new Enemey("enemey1", 4,300,366);
+            function enemeytouch(){
                 
+                for(let i=1;i<6;i++){
+                    if(enemies["enemey"+String(i)].health>0){
+                        ctx.drawImage(img2, enemies["enemey"+String(i)].x-wx/10+250, enemies["enemey"+String(i)].y-wy/10+250,30,30);     
+                        if(
+                            wx < enemies["enemey"+String(i)].x * 10 + 30 * 10 &&
+                            wx > enemies["enemey"+String(i)].x * 10 - 300 &&
+                            wy > enemies["enemey"+String(i)].y * 10 - 300 &&
+                            wy < enemies["enemey"+String(i)].y * 10 + 30 * 10 && enemies["enemey"+String(i)].immune==false
+                            ){
+                            if(attacking){
+                                enemies["enemey"+String(i)].immune=true;
+                                setTimeout(() =>enemies["enemey"+String(i)].immune=false , 1400)
+                                enemies["enemey"+String(i)].attacked();
+                            
+                            }else{
+                                notdead=false;
+                            }
+                        }   
+                    } 
+                }
+                 
                 
             }
             function particlessplat(){
@@ -820,49 +905,52 @@
                     parti.style.opacity = 0; 
                 }
             }
-            function attacked(hi){
-                
-            }
+
             ///////////////////////////////////////////////
-            ///////////////////////Spike///////////////////
+            ///////////////////////Spikeawdwda///////////////////
             ///////////////////////////////////////////////
-            function touchingspike(p1x, p1y, p2x, p2y, p3x, p3y) {
+            function touchingspike(p1x, p1y, p2x, p2y, p3x, p3y,down,idhi/*-1 for spike facing down*/) {
               
                 const slope1to2 = -(p1y-p2y)/(p1x-p2x);//4/3
                 const slope1to3 = -(p1y-p3y)/(p1x-p3x);//-4/3
                 const slope2to3 = -(p2y-p3y)/(p2x-p3x);//0
                 const b1to2 = p1y-slope1to2*p1x; 
                 const b1to3 = p1y-slope1to3*p1x;
-                const b2to3 = p2y-slope2to3*p1x;
-                 
-                //bottom left
+                const b2to3 = p2y-slope2to3*p1x;//y=mx+b
+                if(idhi==6){
+                    document.getElementById("debug").innerHTML = 
+                        `${wx}||${wy}||${attacking}`;
+
+                }
+                
+                //bottom left corrner for player
                 if (
-                    wy + 300 <= b2to3*10 &&
-                    wy / 10 + 30 >= ((slope1to3) * wx) / 10 + b1to3 &&
-                    wy / 10 + 30 >= ((slope1to2) * wx) / 10 + b1to2
+                    down*(wy + 300) <=b2to3*10 &&
+                    down*wy / 10 + down*30 >= down*(((slope1to3) * wx) / 10 + b1to3) &&
+                    down*wy / 10 + down*30 >= down*(((slope1to2) * wx) / 10 +b1to2)
                 ) {
                     notdead = false;
                 }
                 //Bottom right
                 if (
-                    wy + 300 <= b2to3*10 &&
-                    wy / 10 + 30 >= ((slope1to3) * (wx + 300)) / 10 + b1to3 &&
-                    wy / 10 + 30 >= ((slope1to2) * (wx + 300)) / 10 + b1to2
+                    down*(wy + 300) <= down*b2to3*10 &&
+                    down*wy / 10 + down*30 >= down*(((slope1to3) * (wx + 300)) / 10 +b1to3) &&
+                    down*wy / 10 + down*30 >= down*(((slope1to2) * (wx + 300)) / 10 + b1to2)
                 ) {
                     notdead = false;
                 }
                 //Top right
                  if (
-                    wy <= b2to3*10 &&
-                    wy / 10 >= ((slope1to3) * (wx + 300)) / 10 + b1to3 &&
-                    wy / 10 >= ((slope1to2) * (wx + 300)) / 10 + b1to2
+                     down*(wy) <= down*b2to3*10 &&
+                    down*wy/10 >= down*((slope1to3)*((wx + 300))/10+b1to3) &&
+                    down*wy/10 >= down*(((slope1to2)*(wx + 300))/10 +b1to2)
                 ) {
                     notdead = false;
                 }
                 //Top left
-                if (wy <= b2to3*10 && 
-                    wy / 10 > ((slope1to3) * wx) / 10 + b1to3 && 
-                    wy / 10 > ((slope1to2) * wx) / 10 + b1to2
+                if ( down*wy <= down*b2to3*10 && 
+                    down*wy/10 >= down*(((slope1to3)*wx/10) +b1to3) && 
+                    down*wy/10 >= down*(((slope1to2)*wx/10) +b1to2)
                 ) {
                     notdead = false;
                 }
@@ -875,4 +963,3 @@
         </script>
     </body>
 </html>
-
